@@ -25,4 +25,4 @@ services:
     environment:
       - POSTGRES_DB=app
       - POSTGRES_USER=postgres
-      - POSTGRES_PASS='thisisasecret'
+      - POSTGRES_PASSWORD=thisisasecret
