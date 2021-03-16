@@ -34,7 +34,11 @@ class PublicUserApiTests(TestCase):
 
     def test_user_exists(self):
         '''test creating a user that already exists fails'''
-        payload = {'email': 'test@gmail.com', 'password': 'testpass'}
+        payload = {
+            'email': 'test@gmail.com',
+            'password': 'testpass',
+            'name': 'Peter Parker'
+            }
         create_user(**payload)
 
         response = self.client.post(CREATE_USER_URL, payload)
