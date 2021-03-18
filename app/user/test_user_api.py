@@ -100,6 +100,7 @@ class PublicUserApiTests(TestCase):
 
 class PrivateUserApiTests(TestCase):
     '''test api requests that require authentication'''
+
     def setUp(self):
         self.user = create_user(
             email='test@gmail.com',
@@ -120,20 +121,20 @@ class PrivateUserApiTests(TestCase):
             'email': self.user.email
         })
 
-        def test_post_me_not_allowed(Self):
-            '''test that posts is not allowed on the me url'''
-            response = self.client.post(ME_URL, {})
+    def test_post_me_not_allowed(self):
+        '''test that posts is not allowed on the me url'''
+        response = self.client.post(ME_URL, {})
 
-            self.assertEqual(response.status_code,
-                             status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
-        def test_update_user_profile(self):
-            '''test updating the user profile for authenticated users'''
-            payload = {'name': 'new name', 'password': 'newpassword123'}
+    def test_update_user_profile(self):
+        '''test updating the user profile for authenticated users'''
+        payload = {'name': 'new name', 'password': 'newpassword123'}
 
-            response = self.client.patch(ME_URL, payload)
+        response = self.client.patch(ME_URL, payload)
 
-            self.user.refresh_from_db()
-            self.assertEqual(self.user.name, payload('name'))
-            self.assertTrue(self.user.check_password(payload['password']))
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.name, payload['name'])
+        self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
