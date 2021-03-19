@@ -8,6 +8,7 @@ from recipe.serializers import IngredientSerializer
 
 INGREDIENT_URL = reverse('recipe:ingredient-list')
 
+
 class PublicIngredientsApiTests(TestCase):
     '''test publicly available ingredients API'''
 
@@ -19,12 +20,12 @@ class PublicIngredientsApiTests(TestCase):
         response = self.client.get(INGREDIENT_URL)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-    
+
 
 class PrivateIngredientsApiTests(TestCase):
     '''test private ingredients API'''
 
-    def setUP(self):
+    def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             'test@gmail.com'
@@ -32,16 +33,16 @@ class PrivateIngredientsApiTests(TestCase):
         )
 
         self.client.force_authenticate(self.user)
-    
+
     def test_retrieve_ingredients_list(self):
         '''test retrieve a list of ingredients'''
         Ingredient.objects.create(user=self.user, name='Kale')
-        Ingredients.object.create(user=self.user, name='Salt')
+        Ingredient.objects.create(user=self.user, name='Salt')
 
-        response = self.client.get(INGREDIENTS_URL)
+        response = self.client.get(INGREDIENT_URL)
         ingredients = Ingredient.objects.all().order_by('-name')
         serializer = IngredientSerializer(ingredients, many=True)
-        self.assertEqual(response.status_code, status.HTTP_200_Ok)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
 
     def test_ingredients_limited_to_user(self):
@@ -54,7 +55,7 @@ class PrivateIngredientsApiTests(TestCase):
 
         ingredient = Ingredient.objects.create(user=self.user, name='Tumeric')
 
-        respose = self.client.get(INGREDIENT_URL)
+        response = self.client.get(INGREDIENT_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], ingredient.name)
